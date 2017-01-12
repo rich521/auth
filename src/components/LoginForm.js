@@ -1,17 +1,48 @@
 import React, { Component } from 'react';
-// import { View } from 'react-native';
-import { Button, Card, CardSection } from './common';
+import firebase from 'firebase';
+import { Button, Card, CardSection, Input } from './common';
 
 export default class LoginForm extends Component {
+  state = {
+    email: '',
+    password: ''
+  };
+
+  onButtonPress() {
+    const { email, password } = this.state;
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .catch(() => {
+        firebase.auth().createUserWithEmailAndPassword(email, password);
+      });
+  }
+
   render() {
     return (
       <Card>
-        <CardSection />
-
-        <CardSection />
+        <CardSection>
+          <Input
+            label="Email"
+            placeholder="user123@gmail.com"
+            value={this.state.email}
+            onChangeText={email => this.setState({ email })}
+          />
+        </CardSection>
 
         <CardSection>
-          <Button>
+          <Input
+            label="Password"
+            placeholder="password"
+            value={this.state.password}
+            onChangeText={password => this.setState({ password })}
+            secureTextEntry
+          />
+        </CardSection>
+
+        <CardSection>
+          <Button onPress={this.onButtonPress.bind(this)}>
             Log In
           </Button>
         </CardSection>
